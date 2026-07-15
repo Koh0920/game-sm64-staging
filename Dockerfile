@@ -1,20 +1,17 @@
-FROM docker.io/library/ubuntu:22.04
+FROM docker.io/library/alpine:3.20
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    HOME=/home/ato \
+ENV HOME=/home/ato \
     DISPLAY=:1 \
     XDG_RUNTIME_DIR=/run/sm64/xdg \
     SM64_ROOT=/opt/sm64
 
-RUN for i in 1 2 3 4 5; do \
-      apt-get update -qq && \
-      apt-get install --yes --no-install-recommends \
-        openbox python3 x11-apps x11-utils x11-xkb-utils \
-        tigervnc-scraping-server xdotool xterm xvfb \
-      && rm -rf /var/lib/apt/lists/* \
+RUN for i in 1 2 3; do \
+      apk add --no-cache \
+        bash python3 xvfb xvfb-run xdpyinfo \
+        xwininfo xrandr tigervnc xterm xdotool \
+        setxkbmap \
       && exit 0; \
-      echo "attempt $i failed, sleeping 10..."; \
-      sleep 10; \
+      echo "attempt $i failed"; sleep 5; \
     done; exit 1
 
 RUN install -d -o 1000 -g 1000 -m 0755 /opt/sm64 /opt/sm64/scripts /run/sm64 /run/sm64/xdg
