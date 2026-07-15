@@ -8,33 +8,26 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
-        ca-certificates \
-        curl \
+        openbox \
         python3 \
-        xvfb \
-        x11-utils \
-        x11-xserver-utils \
         x11-apps \
-        xfonts-base \
-        fonts-dejavu-core \
-        tigervnc-standalone-server \
-        tigervnc-common \
-        websockify \
-        nginx-light \
-        supervisor \
-        tini \
+        x11-utils \
+        x11-xkb-utils \
+        tigervnc-scraping-server \
+        xdotool \
+        xterm \
+        xvfb \
     && rm -rf /var/lib/apt/lists/*
 
 RUN install -d -o 1000 -g 1000 -m 0755 /opt/sm64 /opt/sm64/scripts /run/sm64 /run/sm64/xdg
 
 COPY --chown=1000:1000 scripts/ /opt/sm64/scripts/
-COPY --chown=1000:1000 supervisor/ /opt/sm64/supervisor/
 COPY --chown=1000:1000 web/ /opt/sm64/web/
-COPY --chown=1000:1000 nginx.conf /opt/sm64/nginx.conf
+
 RUN chmod 0755 /opt/sm64/scripts/*.sh
 
 USER 1000:1000
 WORKDIR /home/ato
 EXPOSE 3000
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/opt/sm64/scripts/entrypoint.sh"]
+CMD ["/opt/sm64/scripts/entrypoint.sh"]
