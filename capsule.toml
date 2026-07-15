@@ -1,0 +1,36 @@
+schema_version = "0.3"
+name = "game-sm64"
+version = "1.0.0"
+type = "app"
+default_target = "desktop"
+
+[source]
+repository = "n64decomp/sm64"
+
+[metadata]
+display_name = "Super Mario 64"
+description = "Super Mario 64 PC Port — pixelStream staging research"
+tags = ["game", "n64", "pixel-stream", "staging-research"]
+
+[requirements]
+disk = "2GB"
+
+[targets.desktop]
+runtime = "oci"
+image = "ghcr.io/koh0920/game-sm64:latest"
+port = 3000
+user = "1000:1000"
+env = { DISPLAY = ":1", HOME = "/home/ato", XDG_RUNTIME_DIR = "/run/sm64/xdg" }
+
+[services.main]
+target = "desktop"
+readiness_probe = { http_get = "/healthz", port = "3000", initial_delay_seconds = 5, timeout_seconds = 120 }
+
+[network]
+egress_allow = []
+
+[isolation]
+allow_env = []
+
+[store]
+playground = true

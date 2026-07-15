@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SM64 — pixelStream</title>
+    <style>
+      :root { color-scheme: dark; font-family: ui-sans-serif, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #101419; color: #eef2f5; }
+      header { height: 48px; display: flex; gap: 12px; align-items: center; padding: 0 16px; background: #182129; border-bottom: 1px solid #31404b; }
+      strong { margin-right: auto; letter-spacing: .02em; }
+      a { color: #081014; background: #78dce8; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 13px; }
+      iframe { width: 100%; height: calc(100vh - 48px); border: 0; background: #111; }
+      .badge { font-size: 11px; background: #31404b; color: #b0bec5; padding: 2px 8px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Super Mario 64 <span class="badge">pixelStream · staging</span></strong>
+      <a href="/healthz" target="_blank">health</a>
+    </header>
+    <iframe
+      id="sm64-desktop"
+      title="SM64 pixelStream"
+      src="/novnc/vnc.html?autoconnect=1&resize=remote&path=websockify&reconnect=1"
+      allow="clipboard-read; clipboard-write"
+    ></iframe>
+    <script>
+      (() => {
+        const desktop = document.getElementById("sm64-desktop");
+        const retryDelaysMs = [2000, 4000, 8000, 12000, 16000];
+        let retryIndex = 0;
+        let retryTimer = null;
+        let monitorTimer = null;
+
+        const clearRetry = () => {
+          if (retryTimer !== null) {
+            clearTimeout(retryTimer);
+            retryTimer = null;
+          }
+        };
+
+        const inspectNoVnc = () => {
+          const frameDocument = desktop.contentDocument;
+          if (!frameDocument) return;
+          if (frameDocument.documentElement.classList.contains("noVNC_connected")) {
+            retryIndex = 0;
+            clearRetry();
+            return;
+          }
+          const status = frameDocument.getElementById("noVNC_status");
+          const failed = status?.classList.contains("noVNC_status_error");
+          if (!failed || retryTimer !== null || retryIndex >= retryDelaysMs.length) return;
+          const delay = retryDelaysMs[retryIndex++];
+          retryTimer = setTimeout(() => {
+            retryTimer = null;
+            desktop.contentWindow.location.reload();
+          }, delay);
+        };
+
+        desktop.addEventListener("load", () => {
+          if (monitorTimer !== null) clearInterval(monitorTimer);
+          monitorTimer = setInterval(inspectNoVnc, 250);
+          inspectNoVnc();
+        });
+
+        window.addEventListener("beforeunload", () => {
+          clearRetry();
+          if (monitorTimer !== null) clearInterval(monitorTimer);
+        });
+      })();
+    </script>
+  </body>
+</html>
