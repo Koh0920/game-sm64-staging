@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-for _ in $(seq 1 100); do
+for ((i=0; i<100; i++)); do
   if xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; then
     break
   fi
@@ -10,10 +10,10 @@ done
 
 xdpyinfo -display "$DISPLAY" >/dev/null
 
-# Start SM64 (native binary). If not available, fall back to xclock demo.
 if [[ -x /opt/sm64/sm64 ]]; then
   exec /opt/sm64/sm64
 else
-  # Demo: show pixelStream is working with a visible X11 app
-  exec xclock -digital -strftime -geometry 640x480+0+0 -fg white -bg '#101419'
+  exec xterm -display "$DISPLAY" -geometry 80x24+120+80 \
+    -title "SM64 pixelStream Demo" \
+    -e bash -c 'echo "SM64 pixelStream demo"; echo "Game binary not available"; exec bash'
 fi
