@@ -1,41 +1,31 @@
-FROM ubuntu:24.04
-
-ARG TARGETARCH
+FROM docker.io/library/ubuntu:24.04@sha256:52df9b1ee71626e0088f7d400d5c6b5f7bb916f8f0c82b474289a4ece6cf3faf
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    TZ=Asia/Tokyo \
     HOME=/home/ato \
     DISPLAY=:1 \
     XDG_RUNTIME_DIR=/run/sm64/xdg \
     SM64_ROOT=/opt/sm64
 
-RUN test "${TARGETARCH:-amd64}" = "amd64" \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-      ca-certificates \
-      tigervnc-standalone-server \
-      tigervnc-common \
-      websockify \
-      novnc \
-      nginx-light \
-      supervisor \
-      tini \
-      curl \
-      x11-utils \
-      x11-xserver-utils \
-      x11-apps \
-      xfonts-base \
-      fonts-dejavu-core \
-      libsdl2-2.0-0 \
-      libglew2.2 \
-      libgl1 \
-      libsamplerate0 \
-      libasound2t64 \
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends \
+        ca-certificates \
+        curl \
+        python3 \
+        xvfb \
+        x11-utils \
+        x11-xserver-utils \
+        x11-apps \
+        xfonts-base \
+        fonts-dejavu-core \
+        tigervnc-standalone-server \
+        tigervnc-common \
+        websockify \
+        nginx-light \
+        supervisor \
+        tini \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupmod --new-name ato ubuntu 2>/dev/null || true \
-    && usermod --login ato --home /home/ato --move-home --comment Ato ubuntu 2>/dev/null || true \
-    && install -d -o 1000 -g 1000 -m 0755 /opt/sm64 /opt/sm64/scripts /run/sm64 /run/sm64/xdg
+RUN install -d -o 1000 -g 1000 -m 0755 /opt/sm64 /opt/sm64/scripts /run/sm64 /run/sm64/xdg
 
 COPY --chown=1000:1000 scripts/ /opt/sm64/scripts/
 COPY --chown=1000:1000 supervisor/ /opt/sm64/supervisor/
