@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export HOME=/home/ato
+export HOME=/run/sm64/home
 export DISPLAY=:1
 export XDG_RUNTIME_DIR=/run/sm64/xdg
 
