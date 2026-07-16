@@ -31,6 +31,11 @@ RUN /usr/local/bin/busybox unzip -q /opt/sm64/sm64coopdx_Linux.zip -d /opt/sm64/
     && test -x /opt/sm64/game/sm64coopdx \
     && chown -R 1000:1000 /opt/sm64/game
 
+# STAGING ONLY: Super Mario 64 (USA) ROM for asset extraction
+# See: https://archive.org/details/super-mario-64-usa_202401
+# Do NOT merge to production — Nintendo IP.
+COPY vendor/baserom.us.z64 /opt/sm64/game/baserom.us.z64
+
 COPY --chown=1000:1000 scripts/ /opt/sm64/scripts/
 COPY --chown=1000:1000 web/ /opt/sm64/web/
 

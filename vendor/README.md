@@ -11,8 +11,17 @@ in this GitHub Source repository.
 - SHA-256:
   `4229f82fc4395e78faf192c910ffcfcc1d70f59a558cadf0f63ae548901fa5f5`
 
-The release binary still requires a user-provided, valid US Super Mario 64 ROM
-at runtime. No ROM is included in this repository or capsule.
+## Super Mario 64 (USA) ROM
+
+**STAGING ONLY — do not merge to production.**
+
+The sm64coopdx binary requires a valid US Super Mario 64 ROM for asset
+extraction at first run. This file is included in the staging capsule only.
+
+- Source: Internet Archive (`super-mario-64-usa_202401`)
+- File: `baserom.us.z64`
+- SHA-1: `9bef1128717f958171a4afac3ed78ee2bb4e86ce`
+- Size: 8.0 MiB
 
 ## Debian runtime packages
 
