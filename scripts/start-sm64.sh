@@ -2,18 +2,15 @@
 set -euo pipefail
 
 for ((i=0; i<100; i++)); do
-  if xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; then
+  if /opt/base/bin/xdpyprobe --quiet "$DISPLAY"; then
     break
   fi
   sleep 0.1
 done
 
-xdpyinfo -display "$DISPLAY" >/dev/null
+/opt/base/bin/xdpyprobe --quiet "$DISPLAY"
 
-if [[ -x /opt/sm64/sm64 ]]; then
-  exec /opt/sm64/sm64
-else
-  exec xterm -display "$DISPLAY" -geometry 80x24+120+80 \
-    -title "SM64 pixelStream Demo" \
-    -e bash -c 'echo "SM64 pixelStream demo"; echo "Game binary not available"; exec bash'
-fi
+cd /opt/sm64/game
+export LD_LIBRARY_PATH=/opt/sm64/game${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+
+exec /opt/sm64/game/sm64coopdx
