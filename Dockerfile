@@ -1,6 +1,10 @@
 FROM docker.io/library/busybox@sha256:0872fb3a7632ba9d0ae46a8e832a62b30ce83a6f220b8bb52903d9cf477dabe3 AS busybox
 
-FROM docker.io/jlesage/baseimage-gui@sha256:3369ba652f07c5c0ccaba37b7885ba162e205fb948874ab41a07172e6f3de99a
+FROM docker.io/jlesage/baseimage-gui@sha256:3369ba652f07c5c0ccaba37b7885ba162e205fb948874ab41a07172e6f3de99a AS gui-base
+
+FROM scratch
+
+COPY --from=gui-base / /
 
 ENV HOME=/home/ato \
     DISPLAY=:1 \
