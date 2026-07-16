@@ -15,7 +15,7 @@ rm -f /tmp/.X1-lock /tmp/.X11-unix/X1
 Xvnc :1 -rfbport 5901 -SecurityTypes None \
   -geometry 1280x720 -depth 24 \
   -AlwaysShared -DisconnectClients=0 \
-  -desktop SM64 -localhost -ac &
+  -desktop SM64 -localhost no -ac &
 VNC_PID=$!
 
 attempt=0
