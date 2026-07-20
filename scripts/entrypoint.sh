@@ -33,6 +33,10 @@ sleep 0.25
 kill -0 "$GAME_PID"
 
 printf 'ok\n' >/run/sm64/http/healthz
+# The game is delivered over the pixel stream (RFB :5901), not HTTP. Still serve a
+# 2xx landing page on `/` so the snapshot warmup gate (which probes `/`) is
+# satisfied and health checks that hit the root succeed.
+printf '<!doctype html><meta charset="utf-8"><title>Super Mario 64</title><body style="font:16px system-ui;margin:2rem">Super Mario 64 is loading — connect via the pixel stream.</body>' >/run/sm64/http/index.html
 /usr/local/bin/busybox httpd -f -p 0.0.0.0:3000 -h /run/sm64/http &
 HEALTH_PID=$!
 
